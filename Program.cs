@@ -14,16 +14,13 @@ namespace TratamentoCSV
     {
         private static void Main(string[] args)
         {
-            CultureInfo CultureInfo1 = (CultureInfo)CultureInfo.CurrentCulture.Clone();
-            CultureInfo1.DateTimeFormat.ShortDatePattern = "dd/MM/yyyy HH:mm";
-            Thread.CurrentThread.CurrentCulture = CultureInfo1;
-
+            string path = @"C:\TEMP\csse_covid_19_daily_reports\01-22-2020.csv";
+            int count = 1;
             string linha = "";
             string[] linhaseparada = null;
-            StreamReader reader = new StreamReader(@"C:\Users\rbani\Documents\OPET\TDS5_N_Data Science\ETL\DS_aula06\COVID-19\csse_covid_19_data\csse_covid_19_daily_reports\01-22-2020.csv", Encoding.UTF8, true);
+            
+            StreamReader reader = new StreamReader(path, Encoding.UTF8, true);
             Daily daily = new Daily();
-
-            int count = 0;
 
             while (true)
             {
@@ -37,7 +34,7 @@ namespace TratamentoCSV
                 {
                     linhaseparada = linha.Split(',');
 
-                    if (count >= 1)
+                    if (count > 1)
                     {
                         //Province / State
                         if (linhaseparada[0] == "" || linhaseparada[0] == null)
@@ -51,7 +48,7 @@ namespace TratamentoCSV
 
                         daily.CountryRegion = linhaseparada[1];
 
-                        daily.LastUpdate = Convert.ToDateTime((linhaseparada[2]).ToString(CultureInfo1));
+                        daily.LastUpdate = linhaseparada[2];
 
                         if (linhaseparada[3] == "")
                         {
@@ -79,10 +76,10 @@ namespace TratamentoCSV
                         {
                             daily.Recovered = Convert.ToInt32(linhaseparada[5]);
                         }
+                        Console.WriteLine(daily.ProvinceState + " - " + daily.CountryRegion + " - " + daily.LastUpdate + " - " + daily.Confirmed + " - " + daily.Deaths + " - " + daily.Recovered);
                     }
                     count++;
                 }
-
                 string resultado = string.Format(
                 @"Linha - 
                     Campo 1: {0}
@@ -92,7 +89,6 @@ namespace TratamentoCSV
                     Campo 5: {4}
                     Campo 6: {5}", linhaseparada[0], linhaseparada[1], linhaseparada[2], linhaseparada[3], linhaseparada[4], linhaseparada[5]);
                 Console.WriteLine(resultado);
-                Console.WriteLine(daily.ProvinceState + " - " + daily.CountryRegion + " - " + daily.LastUpdate + " - " + daily.Confirmed + " - " + daily.Deaths + " - " + daily.Recovered);
             }
             Console.ReadKey();
         }
