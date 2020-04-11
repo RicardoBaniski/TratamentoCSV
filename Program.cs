@@ -37,11 +37,13 @@ namespace TratamentoCSV
                         {
                             string[] linhaseparada = linha.Split(',');
 
-                            if (count > 1)
+                            if (linhaseparada.Length == 6 && count > 1)
                             {
-                                if (linhaseparada[0] == "" || linhaseparada[0] == null)
+                                daily.City = null;
+
+                                if (linhaseparada[0] == "" || linhaseparada[1] == null)
                                 {
-                                    daily.ProvinceState = "NAO INFORMADO";
+                                    daily.ProvinceState = null;
                                 }
                                 else
                                 {
@@ -78,11 +80,65 @@ namespace TratamentoCSV
                                 {
                                     daily.Recovered = Convert.ToInt32(linhaseparada[5]);
                                 }
+                            }
+
+                            if (linhaseparada.Length == 7 && count > 1)
+                            {
+                                if (linhaseparada[0] == "" || linhaseparada[0] == null)
+                                {
+                                    daily.City = null;
+                                }
+                                else
+                                {
+                                    daily.City = linhaseparada[0].Substring(1);
+                                }
+
+                                if (linhaseparada[1] == "" || linhaseparada[1] == null)
+                                {
+                                    daily.ProvinceState = null;
+                                }
+                                else
+                                {
+                                    daily.ProvinceState = linhaseparada[1].Substring(0, linhaseparada[1].Length - 1);
+                                }
+
+                                daily.CountryRegion = linhaseparada[2].ToString().Trim();
+
+                                daily.LastUpdate = linhaseparada[3].ToString().Trim();
+
+                                if (linhaseparada[4] == "")
+                                {
+                                    daily.Confirmed = 0;
+                                }
+                                else
+                                {
+                                    daily.Confirmed = Convert.ToInt32(linhaseparada[4]);
+                                }
+
+                                if (linhaseparada[5] == "")
+                                {
+                                    daily.Deaths = 0;
+                                }
+                                else
+                                {
+                                    daily.Deaths = Convert.ToInt32(linhaseparada[5]);
+                                }
+
+                                if (linhaseparada[6] == "")
+                                {
+                                    daily.Recovered = 0;
+                                }
+                                else
+                                {
+                                    daily.Recovered = Convert.ToInt32(linhaseparada[6]);
+                                }
 
                                 //Console.WriteLine(daily.ProvinceState + " - " + daily.CountryRegion + " - " + daily.LastUpdate + " - " + daily.Confirmed + " - " + daily.Deaths + " - " + daily.Recovered);
+
                                 conn.Open();
                                 cmd = new SqlCommand("spInsereDaily", conn);
                                 cmd.CommandType = CommandType.StoredProcedure;
+                                cmd.Parameters.Add("@City", SqlDbType.VarChar).Value = daily.City;
                                 cmd.Parameters.Add("@ProvinceState", SqlDbType.VarChar).Value = daily.ProvinceState;
                                 cmd.Parameters.Add("@CountryRegion", SqlDbType.VarChar).Value = daily.CountryRegion;
                                 cmd.Parameters.Add("@LastUpdate", SqlDbType.VarChar).Value = daily.LastUpdate;

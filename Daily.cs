@@ -8,6 +8,7 @@ namespace TratamentoCSV
 {
     class Daily
     {
+        public string City { get; set; }
         public string ProvinceState { get; set; }
         public string CountryRegion { get; set; }
         public string LastUpdate { get; set; }
