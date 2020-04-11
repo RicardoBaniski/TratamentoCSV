@@ -8,7 +8,7 @@ namespace TratamentoCSV
 {
     class Program
     {
-        private static void Main(string[] args)
+        public static void Main(string[] args)
         {
             SqlConnection conn = new SqlConnection(@"Data Source=AVELL\SQLEXPRESS;Initial Catalog=covid;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             SqlCommand cmd = new SqlCommand();
@@ -92,15 +92,6 @@ namespace TratamentoCSV
                 }
                 count++;
             }
-            //string resultado = string.Format(
-            //@"Linha - 
-            //    Campo 1: {0}
-            //    Campo 2: {1}
-            //    Campo 3: {2}
-            //    Campo 4: {3}
-            //    Campo 5: {4}
-            //    Campo 6: {5}", linhaseparada[0], linhaseparada[1], linhaseparada[2], linhaseparada[3], linhaseparada[4], linhaseparada[5]);
-            //Console.WriteLine(resultado);
         }
     }
 }
