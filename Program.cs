@@ -16,14 +16,11 @@ namespace TratamentoCSV
 
             string path = @"C:\TEMP\csse_covid_19_daily_reports\01-22-2020.csv";
             int count = 1;
-            string linha = "";
-            string[] linhaseparada = null;
-
             var reader = new StreamReader(path, Encoding.UTF8, true);
 
             while (true)
             {
-                linha = reader.ReadLine();
+                string linha = reader.ReadLine();
 
                 if (linha == null)
                 {
@@ -31,8 +28,8 @@ namespace TratamentoCSV
                 }
                 else
                 {
-                    linhaseparada = linha.Split(',');
-
+                    string[] linhaseparada = linha.Split(',');
+                    
                     if (count > 1)
                     {
 
