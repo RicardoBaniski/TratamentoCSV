@@ -3,17 +3,18 @@ using System.Text;
 using System.IO;
 using System.Data.SqlClient;
 using System.Data;
+using System.Linq;
 
 namespace TratamentoCSV
 {
     class Program
     {
+        public static string[] novaLinhaSeparada;
+        public static SqlConnection conn = new SqlConnection(@"Data Source=AVELL\SQLEXPRESS;Initial Catalog=covid;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+        public static SqlCommand cmd = new SqlCommand();
+        public static Daily daily = new Daily();
         public static void Main(string[] args)
         {
-            SqlConnection conn = new SqlConnection(@"Data Source=AVELL\SQLEXPRESS;Initial Catalog=covid;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-            SqlCommand cmd = new SqlCommand();
-            Daily daily = new Daily();
-
             string path = @"C:\TEMP\csse_covid_19_daily_reports\";
             string[] files = Directory.GetFiles(path, "*.csv");
 
@@ -35,125 +36,90 @@ namespace TratamentoCSV
                         }
                         else
                         {
-                            string[] linhaseparada = linha.Split(',');
-
+                            string[] linhaSeparada = linha.Split(',');
+                            //PULA O CABEÇALHO
                             if (count > 1)
                             {
-                                if (linhaseparada.Length == 6)
-                                {
-                                    daily.City = "Nao Fornecido";
-
-                                    if (linhaseparada[0] == "" || linhaseparada[1] == null)
-                                    {
-                                        daily.ProvinceState = "Nao Fornecido";
-                                    }
-                                    else
-                                    {
-                                        daily.ProvinceState = linhaseparada[0].ToString().Trim();
-                                    }
-
-                                    daily.CountryRegion = linhaseparada[1].ToString().Trim();
-
-                                    daily.LastUpdate = linhaseparada[2].ToString().Trim();
-
-                                    if (linhaseparada[3] == "")
-                                    {
-                                        daily.Confirmed = 0;
-                                    }
-                                    else
-                                    {
-                                        daily.Confirmed = Convert.ToInt32(linhaseparada[3]);
-                                    }
-
-                                    if (linhaseparada[4] == "")
-                                    {
-                                        daily.Deaths = 0;
-                                    }
-                                    else
-                                    {
-                                        daily.Deaths = Convert.ToInt32(linhaseparada[4]);
-                                    }
-
-                                    if (linhaseparada[5] == "")
-                                    {
-                                        daily.Recovered = 0;
-                                    }
-                                    else
-                                    {
-                                        daily.Recovered = Convert.ToInt32(linhaseparada[5]);
-                                    }
-                                }
-                                else if (linhaseparada.Length == 7)
-                                {
-                                    if (linhaseparada[0] == "" || linhaseparada[0] == null)
-                                    {
-                                        daily.City = "Nao Fornecido";
-                                    }
-                                    else
-                                    {
-                                        daily.City = linhaseparada[0].Substring(1).Trim();
-                                    }
-
-                                    if (linhaseparada[1] == "" || linhaseparada[1] == null)
-                                    {
-                                        daily.ProvinceState = "Nao Fornecido";
-                                    }
-                                    else
-                                    {
-                                        daily.ProvinceState = linhaseparada[1].Substring(0, linhaseparada[1].Length - 1).Trim();
-                                    }
-
-                                    daily.CountryRegion = linhaseparada[2].ToString().Trim();
-
-                                    daily.LastUpdate = linhaseparada[3].ToString().Trim();
-
-                                    if (linhaseparada[4] == "")
-                                    {
-                                        daily.Confirmed = 0;
-                                    }
-                                    else
-                                    {
-                                        daily.Confirmed = Convert.ToInt32(linhaseparada[4]);
-                                    }
-
-                                    if (linhaseparada[5] == "")
-                                    {
-                                        daily.Deaths = 0;
-                                    }
-                                    else
-                                    {
-                                        daily.Deaths = Convert.ToInt32(linhaseparada[5]);
-                                    }
-
-                                    if (linhaseparada[6] == "")
-                                    {
-                                        daily.Recovered = 0;
-                                    }
-                                    else
-                                    {
-                                        daily.Recovered = Convert.ToInt32(linhaseparada[6]);
-                                    }
-                                }
-                                //Console.WriteLine(daily.ProvinceState + " - " + daily.CountryRegion + " - " + daily.LastUpdate + " - " + daily.Confirmed + " - " + daily.Deaths + " - " + daily.Recovered);
-
-                                conn.Open();
-                                cmd = new SqlCommand("spInsereDaily", conn);
-                                cmd.CommandType = CommandType.StoredProcedure;
-                                cmd.Parameters.Add("@City", SqlDbType.VarChar).Value = daily.City;
-                                cmd.Parameters.Add("@ProvinceState", SqlDbType.VarChar).Value = daily.ProvinceState;
-                                cmd.Parameters.Add("@CountryRegion", SqlDbType.VarChar).Value = daily.CountryRegion;
-                                cmd.Parameters.Add("@LastUpdate", SqlDbType.VarChar).Value = daily.LastUpdate;
-                                cmd.Parameters.Add("@Confirmed", SqlDbType.Int).Value = daily.Confirmed;
-                                cmd.Parameters.Add("@Deaths", SqlDbType.Int).Value = daily.Deaths;
-                                cmd.Parameters.Add("@Recovered", SqlDbType.Int).Value = daily.Recovered;
-                                cmd.ExecuteNonQuery();
-                                conn.Close(); 
+                                TrataCampoComAspas(linhaSeparada);
+                                InsereObj(novaLinhaSeparada);
                             }
                         }
                         count++;
+                        Console.WriteLine(count);
                     }
                 }
             }
+        }
+        private static void TrataCampoComAspas(string[] linhaSeparada)
+        {
+            int inicio = 0, fim = 0, count = 0;
+
+            for (int i = 0; i < linhaSeparada.Length; i++)
+            {
+                if (linhaSeparada[i].Contains('"'))
+                {
+                    count++;
+                    switch (count)
+                    {
+                        case 1:
+                            inicio = i;
+                            break;
+                        case 2:
+                            fim = i;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                if (inicio != 0 && fim != 0)
+                {
+                    int d = 1;
+                    while ((fim - inicio) >= d)
+                    {
+                        linhaSeparada[inicio] += linhaSeparada[inicio + d];
+                        d++;
+                    }
+                    var lista = linhaSeparada.ToList();
+                    lista.RemoveRange(inicio + 1, (fim - inicio));
+                    novaLinhaSeparada = lista.ToArray();
+                    fim = 0;
+                    inicio = 0;
+                }
+            }
+        }
+        private static void InsereObj(string[] linhaSeparada)
+        {
+            daily.City = linhaSeparada[1] == "" ? "Nao Informado" : linhaSeparada[1].Replace('"', ' ').Trim();
+            daily.ProvinceState = linhaSeparada[2] == "" ? "Nao Informado" : linhaSeparada[2].Replace('"', ' ').Trim();
+            daily.CountryRegion = linhaSeparada[3] == "" ? "Nao Informado" : linhaSeparada[3].Replace('"', ' ').Trim();
+            daily.LastUpdate = linhaSeparada[4];
+            daily.Lat = linhaSeparada[5];
+            daily.Long = linhaSeparada[6];
+            daily.Confirmed = Convert.ToInt32(linhaSeparada[7]);
+            daily.Deaths = Convert.ToInt32(linhaSeparada[8]);
+            daily.Recovered = Convert.ToInt32(linhaSeparada[9]);
+            daily.Active = Convert.ToInt32(linhaSeparada[10]);
+
+            //InsereSQL(conn, ref cmd, daily);
+        }
+        private static void InsereSQL(SqlConnection conn, ref SqlCommand cmd, Daily daily)
+        {
+            conn.Open();
+            cmd = new SqlCommand("spInsereDaily", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add("@City", SqlDbType.VarChar).Value = daily.City;
+            cmd.Parameters.Add("@ProvinceState", SqlDbType.VarChar).Value = daily.ProvinceState;
+            cmd.Parameters.Add("@CountryRegion", SqlDbType.VarChar).Value = daily.CountryRegion;
+            cmd.Parameters.Add("@LastUpdate", SqlDbType.VarChar).Value = daily.LastUpdate;
+            cmd.Parameters.Add("@Lat", SqlDbType.VarChar).Value = daily.Lat;
+            cmd.Parameters.Add("@Long", SqlDbType.VarChar).Value = daily.Long;
+            cmd.Parameters.Add("@Confirmed", SqlDbType.Int).Value = daily.Confirmed;
+            cmd.Parameters.Add("@Deaths", SqlDbType.Int).Value = daily.Deaths;
+            cmd.Parameters.Add("@Recovered", SqlDbType.Int).Value = daily.Recovered;
+            cmd.Parameters.Add("@Active", SqlDbType.Int).Value = daily.Active;
+            cmd.ExecuteNonQuery();
+            conn.Close();
         }
     }
 }
