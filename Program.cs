@@ -37,7 +37,7 @@ namespace TratamentoCSV
                         else
                         {
                             string[] linhaSeparada = linha.Split(',');
-                            //PULA O CABEÇALHO
+
                             if (count > 1)
                             {
                                 TrataCampoComAspas(linhaSeparada);
@@ -50,9 +50,11 @@ namespace TratamentoCSV
                 }
             }
         }
+
         private static void TrataCampoComAspas(string[] linhaSeparada)
         {
             int inicio = 0, fim = 0, count = 0;
+            var lista = linhaSeparada.ToList();
 
             for (int i = 0; i < linhaSeparada.Length; i++)
             {
@@ -80,14 +82,15 @@ namespace TratamentoCSV
                         linhaSeparada[inicio] += linhaSeparada[inicio + d];
                         d++;
                     }
-                    var lista = linhaSeparada.ToList();
+
                     lista.RemoveRange(inicio + 1, (fim - inicio));
-                    novaLinhaSeparada = lista.ToArray();
                     fim = 0;
                     inicio = 0;
                 }
             }
+            novaLinhaSeparada = lista.ToArray();
         }
+
         private static void InsereObj(string[] linhaSeparada)
         {
             daily.City = linhaSeparada[1] == "" ? "Nao Informado" : linhaSeparada[1].Replace('"', ' ').Trim();
@@ -100,9 +103,9 @@ namespace TratamentoCSV
             daily.Deaths = Convert.ToInt32(linhaSeparada[8]);
             daily.Recovered = Convert.ToInt32(linhaSeparada[9]);
             daily.Active = Convert.ToInt32(linhaSeparada[10]);
-
-            //InsereSQL(conn, ref cmd, daily);
+            InsereSQL(conn, ref cmd, daily);
         }
+
         private static void InsereSQL(SqlConnection conn, ref SqlCommand cmd, Daily daily)
         {
             conn.Open();
