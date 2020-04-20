@@ -53,33 +53,6 @@ namespace TratamentoCSV
             }
         }
 
-        public static void InsereColunas(string[] linhaSeparadaSemAspas)
-        {
-            var lista = linhaSeparadaSemAspas.ToList();
-            switch (linhaSeparadaSemAspas.Length)
-            {
-                case 6:
-                    lista.Insert(6, "");
-                    lista.Insert(3, "");
-                    lista.Insert(4, "");
-                    lista.Insert(0, "");
-                    lista.Insert(0, "");
-                    colunaInserida = lista.ToArray();
-                    break;
-                case 7:
-                    break;
-                case 8:
-                    lista.Insert(3, lista[6].ToString());
-                    lista.Insert(4, lista[8].ToString());
-                    lista.Insert(0, "");
-                    lista.Insert(1, "");
-                    colunaInserida = lista.ToArray();
-                    break;
-                default:
-                    break;
-            }
-        }
-
         public static void TrataCampoComAspas(string[] linhaSeparada)
         {
             int inicio = 0, fim = 0, count = 0;
@@ -120,6 +93,33 @@ namespace TratamentoCSV
             linhaSeparadaSemAspas = lista.ToArray();
         }
 
+        public static void InsereColunas(string[] linhaSeparadaSemAspas)
+        {
+            var lista = linhaSeparadaSemAspas.ToList();
+            switch (linhaSeparadaSemAspas.Length)
+            {
+                case 6:
+                    lista.Insert(6, "");
+                    lista.Insert(3, "");
+                    lista.Insert(4, "");
+                    lista.Insert(0, "");
+                    lista.Insert(0, "");
+                    colunaInserida = lista.ToArray();
+                    break;
+                case 7:
+                    break;
+                case 8:
+                    lista.Insert(3, lista[6].ToString());
+                    lista.Insert(4, lista[8].ToString());
+                    lista.Insert(0, "");
+                    lista.Insert(1, "");
+                    colunaInserida = lista.ToArray();
+                    break;
+                default:
+                    break;
+            }
+        }
+
         public static void InsereObj(string[] colunaInserida)
         {
             daily.City = colunaInserida[1] == "" ? "Nao Informado" : colunaInserida[1].Replace('"', ' ').Trim();
@@ -132,7 +132,7 @@ namespace TratamentoCSV
             daily.Deaths = colunaInserida[8] == "" ? 0 : Convert.ToInt32(colunaInserida[8]);
             daily.Recovered = colunaInserida[9] == "" ? 0 : Convert.ToInt32(colunaInserida[9]);
             daily.Active = colunaInserida[10] == "" ? 0 : Convert.ToInt32(colunaInserida[10]);
-            InsereSQL(conn, ref cmd, daily);
+            //InsereSQL(conn, ref cmd, daily);
         }
 
         public static void InsereSQL(SqlConnection conn, ref SqlCommand cmd, Daily daily)
