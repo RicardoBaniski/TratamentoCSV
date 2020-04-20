@@ -9,7 +9,8 @@ namespace TratamentoCSV
 {
     class Program
     {
-        public static string[] novaLinhaSeparada;
+        public static string[] linhaSeparadaSemAspas;
+        public static string[] colunaInserida;
         public static SqlConnection conn = new SqlConnection(@"Data Source=AVELL\SQLEXPRESS;Initial Catalog=covid;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
         public static SqlCommand cmd = new SqlCommand();
         public static Daily daily = new Daily();
@@ -41,17 +42,45 @@ namespace TratamentoCSV
                             if (count > 1)
                             {
                                 TrataCampoComAspas(linhaSeparada);
-                                InsereObj(novaLinhaSeparada);
+                                InsereColunas(linhaSeparadaSemAspas);
+                                InsereObj(colunaInserida);
                             }
                         }
                         count++;
-                        Console.WriteLine(count);
+                        Console.WriteLine(count + " - " + file);
                     }
                 }
             }
         }
 
-        private static void TrataCampoComAspas(string[] linhaSeparada)
+        public static void InsereColunas(string[] linhaSeparadaSemAspas)
+        {
+            var lista = linhaSeparadaSemAspas.ToList();
+            switch (linhaSeparadaSemAspas.Length)
+            {
+                case 6:
+                    lista.Insert(6, "");
+                    lista.Insert(3, "");
+                    lista.Insert(4, "");
+                    lista.Insert(0, "");
+                    lista.Insert(0, "");
+                    colunaInserida = lista.ToArray();
+                    break;
+                case 7:
+                    break;
+                case 8:
+                    lista.Insert(3, lista[6].ToString());
+                    lista.Insert(4, lista[8].ToString());
+                    lista.Insert(0, "");
+                    lista.Insert(1, "");
+                    colunaInserida = lista.ToArray();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public static void TrataCampoComAspas(string[] linhaSeparada)
         {
             int inicio = 0, fim = 0, count = 0;
             var lista = linhaSeparada.ToList();
@@ -88,25 +117,25 @@ namespace TratamentoCSV
                     inicio = 0;
                 }
             }
-            novaLinhaSeparada = lista.ToArray();
+            linhaSeparadaSemAspas = lista.ToArray();
         }
 
-        private static void InsereObj(string[] linhaSeparada)
+        public static void InsereObj(string[] colunaInserida)
         {
-            daily.City = linhaSeparada[1] == "" ? "Nao Informado" : linhaSeparada[1].Replace('"', ' ').Trim();
-            daily.ProvinceState = linhaSeparada[2] == "" ? "Nao Informado" : linhaSeparada[2].Replace('"', ' ').Trim();
-            daily.CountryRegion = linhaSeparada[3] == "" ? "Nao Informado" : linhaSeparada[3].Replace('"', ' ').Trim();
-            daily.LastUpdate = linhaSeparada[4];
-            daily.Lat = linhaSeparada[5];
-            daily.Long = linhaSeparada[6];
-            daily.Confirmed = Convert.ToInt32(linhaSeparada[7]);
-            daily.Deaths = Convert.ToInt32(linhaSeparada[8]);
-            daily.Recovered = Convert.ToInt32(linhaSeparada[9]);
-            daily.Active = Convert.ToInt32(linhaSeparada[10]);
+            daily.City = colunaInserida[1] == "" ? "Nao Informado" : colunaInserida[1].Replace('"', ' ').Trim();
+            daily.ProvinceState = colunaInserida[2] == "" ? "Nao Informado" : colunaInserida[2].Replace('"', ' ').Trim();
+            daily.CountryRegion = colunaInserida[3] == "" ? "Nao Informado" : colunaInserida[3].Replace('"', ' ').Trim();
+            daily.LastUpdate = colunaInserida[4];
+            daily.Lat = colunaInserida[5];
+            daily.Long = colunaInserida[6];
+            daily.Confirmed = colunaInserida[7] == "" ? 0 : Convert.ToInt32(colunaInserida[7]);
+            daily.Deaths = colunaInserida[8] == "" ? 0 : Convert.ToInt32(colunaInserida[8]);
+            daily.Recovered = colunaInserida[9] == "" ? 0 : Convert.ToInt32(colunaInserida[9]);
+            daily.Active = colunaInserida[10] == "" ? 0 : Convert.ToInt32(colunaInserida[10]);
             InsereSQL(conn, ref cmd, daily);
         }
 
-        private static void InsereSQL(SqlConnection conn, ref SqlCommand cmd, Daily daily)
+        public static void InsereSQL(SqlConnection conn, ref SqlCommand cmd, Daily daily)
         {
             conn.Open();
             cmd = new SqlCommand("spInsereDaily", conn);
