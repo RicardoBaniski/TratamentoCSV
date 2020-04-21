@@ -19,5 +19,6 @@ namespace TratamentoCSV
         public int Deaths { get; set; }
         public int Recovered { get; set; }
         public int Active { get; set; }
+        public string Arquivo { get; set; }
     }
 }
