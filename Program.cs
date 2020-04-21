@@ -125,18 +125,18 @@ namespace TratamentoCSV
             colunaFormatada = lista.ToArray();
         }
 
-        public static void InsereObj(string[] colunaInserida)
+        public static void InsereObj(string[] colunaFormatada)
         {
-            daily.City = colunaInserida[0] == "" ? "" : colunaInserida[0].Replace('"', ' ').Trim();
-            daily.ProvinceState = colunaInserida[1] == "" ? "" : colunaInserida[1].Replace('"', ' ').Trim();
-            daily.CountryRegion = colunaInserida[2] == "" ? "" : colunaInserida[2].Replace('"', ' ').Trim();
-            daily.LastUpdate = FormataData(colunaInserida[3]);
-            daily.Lat = colunaInserida[4];
-            daily.Long = colunaInserida[5];
-            daily.Confirmed = colunaInserida[6] == "" ? 0 : Convert.ToInt32(colunaInserida[6]);
-            daily.Deaths = colunaInserida[7] == "" ? 0 : Convert.ToInt32(colunaInserida[7]);
-            daily.Recovered = colunaInserida[8] == "" ? 0 : Convert.ToInt32(colunaInserida[8]);
-            daily.Active = colunaInserida[9] == "" ? 0 : Convert.ToInt32(colunaInserida[9]);
+            daily.City = colunaFormatada[0] == "" ? "" : colunaFormatada[0].Replace('"', ' ').Trim();
+            daily.ProvinceState = colunaFormatada[1] == "" ? "" : colunaFormatada[1].Replace('"', ' ').Trim();
+            daily.CountryRegion = colunaFormatada[2] == "" ? "" : colunaFormatada[2].Replace('"', ' ').Trim();
+            daily.LastUpdate = Convert.ToDateTime(FormataData(colunaFormatada[3]));
+            daily.Lat = colunaFormatada[4];
+            daily.Long = colunaFormatada[5];
+            daily.Confirmed = colunaFormatada[6] == "" ? 0 : Convert.ToInt32(colunaFormatada[6]);
+            daily.Deaths = colunaFormatada[7] == "" ? 0 : Convert.ToInt32(colunaFormatada[7]);
+            daily.Recovered = colunaFormatada[8] == "" ? 0 : Convert.ToInt32(colunaFormatada[8]);
+            daily.Active = colunaFormatada[9] == "" ? 0 : Convert.ToInt32(colunaFormatada[9]);
             daily.Arquivo = arquivo;
             InsereSQL(conn, ref cmd, daily);
         }
@@ -149,7 +149,7 @@ namespace TratamentoCSV
             cmd.Parameters.Add("@City", SqlDbType.VarChar).Value = daily.City;
             cmd.Parameters.Add("@ProvinceState", SqlDbType.VarChar).Value = daily.ProvinceState;
             cmd.Parameters.Add("@CountryRegion", SqlDbType.VarChar).Value = daily.CountryRegion;
-            cmd.Parameters.Add("@LastUpdate", SqlDbType.VarChar).Value = daily.LastUpdate;
+            cmd.Parameters.Add("@LastUpdate", SqlDbType.DateTime).Value = daily.LastUpdate;
             cmd.Parameters.Add("@Lat", SqlDbType.VarChar).Value = daily.Lat;
             cmd.Parameters.Add("@Long", SqlDbType.VarChar).Value = daily.Long;
             cmd.Parameters.Add("@Confirmed", SqlDbType.Int).Value = daily.Confirmed;
