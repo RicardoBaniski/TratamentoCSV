@@ -10,9 +10,8 @@ namespace TratamentoCSV
     class Program
     {
         public static string arquivo;
-        public static string identificador;
-        public static string[] linhaSeparadaSemAspas;
-        public static string[] colunaInserida;
+        public static string[] cabecalho;
+        public static string[] colunaFormatada;
         public static SqlConnection conn = new SqlConnection(@"Data Source=AVELL\SQLEXPRESS;Initial Catalog=covid;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
         public static SqlCommand cmd = new SqlCommand();
         public static Daily daily = new Daily();
@@ -44,16 +43,16 @@ namespace TratamentoCSV
 
                             if (count == 1)
                             {
-                                identificador = linhaSeparada[0];
+                                cabecalho = linhaSeparada;
                             }
 
                             if (count > 1)
                             {
-                                //TrataCampoComAspas(linhaSeparada);
-                                InsereColunas(linhaSeparada);
-                                InsereObj(colunaInserida);
+                                FormataColunas(linhaSeparada);
+                                InsereObj(colunaFormatada);
                             }
                         }
+
                         count++;
                         Console.WriteLine(count + " - " + file);
                     }
@@ -61,100 +60,69 @@ namespace TratamentoCSV
             }
         }
 
-        public static void InsereColunas(string[] linhaSeparada)
+        public static void FormataColunas(string[] linhaSeparada)
         {
             var lista = linhaSeparada.ToList();
 
-            switch (identificador)
+            if (cabecalho[0].Equals("Province/State") && cabecalho[cabecalho.Length - 1].Equals("Recovered"))
             {
-                case "Province/State":
-                    if (linhaSeparada.Length < 7)
-                    {
-                        lista.Insert(0, "");
-                        lista.Insert(4, "");
-                        lista.Insert(5, "");
-                        lista.Insert(9, "");
-                    }
-                    else
-                    {
-                        lista.Insert(4, "");
-                        lista.Insert(5, "");
-                        lista.Insert(9, "");
-                    }
-                    break;
-                default:
-                    break;
+                if (linhaSeparada.Length < 7)
+                {
+                    lista.Insert(0, "");
+                    lista.Insert(4, "");
+                    lista.Insert(5, "");
+                    lista.Insert(9, "");
+                }
+                else
+                {
+                    lista.Insert(4, "");
+                    lista.Insert(5, "");
+                    lista.Insert(9, "");
+                }
             }
-            colunaInserida = lista.ToArray();
+
+            if (cabecalho[0].Equals("Province/State") && cabecalho[cabecalho.Length - 1].Equals("Longitude"))
+            {
+                if (linhaSeparada.Length < 9)
+                {
+                    lista.Insert(0, "");
+                    lista.Insert(4, "");
+                    lista.Insert(5, "");
+                    lista[4] = lista[9];
+                    lista[5] = lista[10];
+                    lista[9] = "";
+                    lista.RemoveAt(10);
+                }
+                else
+                {
+                    lista.Insert(4, "");
+                    lista.Insert(5, "");
+                    lista[4] = lista[9];
+                    lista[5] = lista[10];
+                    lista[9] = "";
+                    lista.RemoveAt(10);
+                }
+            }
+
+            if (cabecalho[0].Equals("FIPS"))
+            {
+                lista.RemoveAt(0);
+
+                if (lista[2].Contains("Korea"))
+                {
+                    lista[3] += lista[2] + " ";
+                    lista.RemoveAt(2);
+                }
+
+                if (lista[1].Contains("Bonaire"))
+                {
+                    lista[1] += lista[2] + ", ";
+                    lista.RemoveAt(2);
+                }
+            }
+
+            colunaFormatada = lista.ToArray();
         }
-
-        //public static void TrataCampoComAspas(string[] linhaSeparada)
-        //{
-        //    int inicio = 0, fim = 0, count = 0;
-        //    var lista = linhaSeparada.ToList();
-
-        //    for (int i = 0; i < linhaSeparada.Length; i++)
-        //    {
-        //        if (linhaSeparada[i].Contains('"'))
-        //        {
-        //            count++;
-        //            switch (count)
-        //            {
-        //                case 1:
-        //                    inicio = i;
-        //                    break;
-        //                case 2:
-        //                    fim = i;
-        //                    break;
-        //                default:
-        //                    break;
-        //            }
-        //        }
-
-        //        if (inicio != 0 && fim != 0)
-        //        {
-        //            int d = 1;
-        //            while ((fim - inicio) >= d)
-        //            {
-        //                linhaSeparada[inicio] += linhaSeparada[inicio + d];
-        //                d++;
-        //            }
-
-        //            lista.RemoveRange(inicio + 1, (fim - inicio));
-        //            fim = 0;
-        //            inicio = 0;
-        //        }
-        //    }
-        //    linhaSeparadaSemAspas = lista.ToArray();
-        //}
-
-
-        //public static void InsereColunas(string[] linhaSeparadaSemAspas)
-        //{
-        //    var lista = linhaSeparadaSemAspas.ToList();
-        //    switch (linhaSeparadaSemAspas.Length)
-        //    {
-        //        case 6:
-        //            lista.Insert(6, "");
-        //            lista.Insert(3, "");
-        //            lista.Insert(4, "");
-        //            lista.Insert(0, "");
-        //            lista.Insert(0, "");
-        //            colunaInserida = lista.ToArray();
-        //            break;
-        //        case 8:
-        //            lista.Insert(0, "");
-        //            lista.Insert(0, "");
-        //            lista.Insert(5, lista[8]);
-        //            lista.Insert(6, lista[10]);
-        //            lista[10] = "";
-        //            colunaInserida = lista.ToArray();
-        //            break;
-        //        default:
-        //            colunaInserida = lista.ToArray();
-        //            break;
-        //    }
-        //}
 
         public static void InsereObj(string[] colunaInserida)
         {
