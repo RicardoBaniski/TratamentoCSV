@@ -4,6 +4,7 @@ using System.IO;
 using System.Data.SqlClient;
 using System.Data;
 using System.Linq;
+using System.Globalization;
 
 namespace TratamentoCSV
 {
@@ -58,6 +59,7 @@ namespace TratamentoCSV
                     }
                 }
             }
+            Console.WriteLine(">>>>>>>>>>>>>  CONCLUIDO  <<<<<<<<<<<<<");
         }
 
         public static void FormataColunas(string[] linhaSeparada)
@@ -120,7 +122,6 @@ namespace TratamentoCSV
                     lista.RemoveAt(2);
                 }
             }
-
             colunaFormatada = lista.ToArray();
         }
 
@@ -129,7 +130,7 @@ namespace TratamentoCSV
             daily.City = colunaInserida[0] == "" ? "" : colunaInserida[0].Replace('"', ' ').Trim();
             daily.ProvinceState = colunaInserida[1] == "" ? "" : colunaInserida[1].Replace('"', ' ').Trim();
             daily.CountryRegion = colunaInserida[2] == "" ? "" : colunaInserida[2].Replace('"', ' ').Trim();
-            daily.LastUpdate = colunaInserida[3];
+            daily.LastUpdate = FormataData(colunaInserida[3]);
             daily.Lat = colunaInserida[4];
             daily.Long = colunaInserida[5];
             daily.Confirmed = colunaInserida[6] == "" ? 0 : Convert.ToInt32(colunaInserida[6]);
@@ -158,6 +159,13 @@ namespace TratamentoCSV
             cmd.Parameters.Add("@Arquivo", SqlDbType.VarChar).Value = daily.Arquivo;
             cmd.ExecuteNonQuery();
             conn.Close();
+        }
+
+        public static String FormataData(string LastUpdate)
+        {
+            CultureInfo MyCultureInfo = new CultureInfo("en-US");
+            DateTime MyDateTime = DateTime.Parse(LastUpdate, MyCultureInfo);
+            return MyDateTime.ToString();
         }
     }
 }
