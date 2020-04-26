@@ -53,7 +53,6 @@ namespace TratamentoCSV
                                 InsereObj(colunaFormatada);
                             }
                         }
-
                         count++;
                         Console.WriteLine(count + " - " + file);
                     }
@@ -131,8 +130,8 @@ namespace TratamentoCSV
             daily.ProvinceState = colunaFormatada[1] == "" ? "" : FormataEstado(colunaFormatada[1]);
             daily.CountryRegion = colunaFormatada[2] == "" ? "" : FormataPais(colunaFormatada[2]);
             daily.LastUpdate = Convert.ToDateTime(FormataData(colunaFormatada[3]));
-            daily.Lat = colunaFormatada[4];
-            daily.Long = colunaFormatada[5];
+            daily.Lat = FormataCoordenada(colunaFormatada[4]);
+            daily.Long = FormataCoordenada(colunaFormatada[5]);
             daily.Confirmed = colunaFormatada[6] == "" ? 0 : Convert.ToInt32(colunaFormatada[6]);
             daily.Deaths = colunaFormatada[7] == "" ? 0 : Convert.ToInt32(colunaFormatada[7]);
             daily.Recovered = colunaFormatada[8] == "" ? 0 : Convert.ToInt32(colunaFormatada[8]);
@@ -189,7 +188,7 @@ namespace TratamentoCSV
             return pais;
         }
 
-        public static string RemoveAspasDuplas(string item)
+        public static String RemoveAspasDuplas(string item)
         {
             return item.Replace('"', ' ').Trim();
         }
@@ -331,6 +330,28 @@ namespace TratamentoCSV
                     break;
             }
             return estado;
+        }
+
+        public static String FormataCoordenada(string coordenada)
+        {
+            if (coordenada != "")
+            {
+                if (coordenada.Contains("."))
+                {
+                    string[] coordenadaSeparada = coordenada.Split('.');
+                    
+                    while (coordenadaSeparada[1].Length < 8)
+                    {
+                        coordenadaSeparada[1] += "0";
+                    }
+                    coordenada = coordenadaSeparada[0] + "." + coordenadaSeparada[1];
+                }
+                else
+                {
+                    coordenada += ".0000000";
+                }
+            }
+            return coordenada;
         }
     }
 }
