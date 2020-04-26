@@ -130,10 +130,8 @@ namespace TratamentoCSV
             daily.ProvinceState = colunaFormatada[1] == "" ? "" : FormataEstado(colunaFormatada[1]);
             daily.CountryRegion = colunaFormatada[2] == "" ? "" : FormataPais(colunaFormatada[2]);
             daily.LastUpdate = Convert.ToDateTime(FormataData(colunaFormatada[3]));
-            daily.Lat = FormataCoordenada(colunaFormatada[4]);
-            //daily.Lat = colunaFormatada[4];
+            daily.Lat = FormataCoordenada(colunaFormatada[4])
             daily.Long = FormataCoordenada(colunaFormatada[5]);
-            //daily.Long = colunaFormatada[5];
             daily.Confirmed = colunaFormatada[6] == "" ? 0 : Convert.ToInt32(colunaFormatada[6]);
             daily.Deaths = colunaFormatada[7] == "" ? 0 : Convert.ToInt32(colunaFormatada[7]);
             daily.Recovered = colunaFormatada[8] == "" ? 0 : Convert.ToInt32(colunaFormatada[8]);
