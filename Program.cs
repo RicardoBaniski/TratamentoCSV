@@ -128,8 +128,8 @@ namespace TratamentoCSV
         public static void InsereObj(string[] colunaFormatada)
         {
             daily.City = colunaFormatada[0] == "" ? "" : colunaFormatada[0].Replace('"', ' ').Trim();
-            daily.ProvinceState = colunaFormatada[1] == "" ? "" : colunaFormatada[1].Replace('"', ' ').Trim();
-            daily.CountryRegion = colunaFormatada[2] == "" ? "" : colunaFormatada[2].Replace('"', ' ').Trim();
+            daily.ProvinceState = colunaFormatada[1] == "" ? "" : FormataEstado(colunaFormatada[1]);
+            daily.CountryRegion = colunaFormatada[2] == "" ? "" : FormataPais(colunaFormatada[2]);
             daily.LastUpdate = Convert.ToDateTime(FormataData(colunaFormatada[3]));
             daily.Lat = colunaFormatada[4];
             daily.Long = colunaFormatada[5];
@@ -166,6 +166,166 @@ namespace TratamentoCSV
             CultureInfo MyCultureInfo = new CultureInfo("en-US");
             DateTime MyDateTime = DateTime.Parse(LastUpdate, MyCultureInfo);
             return MyDateTime.ToString();
+        }
+
+        public static String FormataPais(string CountryRegion)
+        {
+            string pais;
+            switch (CountryRegion)
+            {
+                case "UK":
+                    pais = "United Kingdom";
+                    break;
+                case "US":
+                    pais = "United States";
+                    break;
+                case "Taiwan*":
+                    pais = "Taiwan";
+                    break;
+                default:
+                    pais = CountryRegion;
+                    break;
+            }
+            return pais.Replace('"', ' ').Trim();
+        }
+
+        public static String FormataEstado(string ProvinceState)
+        {
+            string estado;
+
+            switch (ProvinceState)
+            {
+                case "IL":
+                    estado = "Illinois";
+                    break;
+                case "CA":
+                    estado = "California";
+                    break;
+                case "CA (From Diamond Princess)":
+                    estado = "California (From Diamond Princess)";
+                    break;
+                case "CO":
+                    estado = "Colorado";
+                    break;
+                case "D.C.":
+                    estado = "District of Columbia";
+                    break;
+                case "FL":
+                    estado = "Florida";
+                    break;
+                case "GA":
+                    estado = "Georgia";
+                    break;
+                case "NV":
+                    estado = "Nevada";
+                    break;
+                case "NY":
+                    estado = "New York";
+                    break;
+                case "OR":
+                    estado = "Oregon";
+                    break;
+                case "PA":
+                    estado = "Pennsylvania";
+                    break;
+                case "QC":
+                    estado = "Quebec";
+                    break;
+                case "RI":
+                    estado = "Rhode Island";
+                    break;
+                case "SC":
+                    estado = "South Carolina";
+                    break;
+                case "TN":
+                    estado = "Tennessee";
+                    break;
+                case "UT":
+                    estado = "Utah";
+                    break;
+                case "VA":
+                    estado = "Virginia";
+                    break;
+                case "WA":
+                    estado = "Washington";
+                    break;
+                case "WI":
+                    estado = "Wisconsin";
+                    break;
+                case "CT":
+                    estado = "Connecticut";
+                    break;
+                case "HI":
+                    estado = "Havai";
+                    break;
+                case "IN":
+                    estado = "Indiana";
+                    break;
+                case "KS":
+                    estado = "Kansas";
+                    break;
+                case "KY":
+                    estado = "Kentucky";
+                    break;
+                case "OK":
+                    estado = "Oklahoma";
+                    break;
+                case "LA":
+                    estado = "Luisiana";
+                    break;
+                case "MA":
+                    estado = "Massachusetts";
+                    break;
+                case "MD":
+                    estado = "Maryland";
+                    break;
+                case "MN":
+                    estado = "Minnesota";
+                    break;
+                case "MO":
+                    estado = "Missouri";
+                    break;
+                case "NC":
+                    estado = "North Carolina";
+                    break;
+                case "NE":
+                    estado = "Nebraska";
+                    break;
+                case "NE (From Diamond Princess)":
+                    estado = "Nebraska (From Diamond Princess)";
+                    break;
+                case "NH":
+                    estado = "New Hampshire";
+                    break;
+                case "NJ":
+                    estado = "New Jersey";
+                    break;
+                case "ON":
+                    estado = "Ontario";
+                    break;
+                case "TX":
+                    estado = "Texas";
+                    break;
+                case "TX (From Diamond Princess)":
+                    estado = "Texas (From Diamond Princess)";
+                    break;
+                case "VT":
+                    estado = "Vermont";
+                    break;
+                case "AZ":
+                    estado = "Arizona";
+                    break;
+                case "IA":
+                    estado = "Iowa";
+                    break;
+                case "U.S.":
+                    estado = "";
+                    break;
+                default:
+                    estado = ProvinceState;
+                    break;
+            }
+            return estado.Replace('"', ' ').Trim();
         }
     }
 }
