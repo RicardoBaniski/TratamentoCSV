@@ -131,13 +131,15 @@ namespace TratamentoCSV
             daily.CountryRegion = colunaFormatada[2] == "" ? "" : FormataPais(colunaFormatada[2]);
             daily.LastUpdate = Convert.ToDateTime(FormataData(colunaFormatada[3]));
             daily.Lat = FormataCoordenada(colunaFormatada[4]);
+            //daily.Lat = colunaFormatada[4];
             daily.Long = FormataCoordenada(colunaFormatada[5]);
+            //daily.Long = colunaFormatada[5];
             daily.Confirmed = colunaFormatada[6] == "" ? 0 : Convert.ToInt32(colunaFormatada[6]);
             daily.Deaths = colunaFormatada[7] == "" ? 0 : Convert.ToInt32(colunaFormatada[7]);
             daily.Recovered = colunaFormatada[8] == "" ? 0 : Convert.ToInt32(colunaFormatada[8]);
             daily.Active = colunaFormatada[9] == "" ? 0 : Convert.ToInt32(colunaFormatada[9]);
             daily.Arquivo = arquivo;
-            //InsereSQL(conn, ref cmd, daily);
+            InsereSQL(conn, ref cmd, daily);
         }
 
         public static void InsereSQL(SqlConnection conn, ref SqlCommand cmd, Daily daily)
@@ -350,11 +352,11 @@ namespace TratamentoCSV
                     {
                         coordenadaSeparada[1] += "0";
                     }
-                    coordenada = coordenadaSeparada[0] + "." + coordenadaSeparada[1];
+                    coordenada = coordenadaSeparada[0] + "," + coordenadaSeparada[1];
                 }
                 else
                 {
-                    coordenada += ".0000000";
+                    coordenada += ",0000000";
                 }
             }
             return coordenada;
