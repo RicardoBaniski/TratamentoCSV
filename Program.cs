@@ -137,7 +137,7 @@ namespace TratamentoCSV
             daily.Recovered = colunaFormatada[8] == "" ? 0 : Convert.ToInt32(colunaFormatada[8]);
             daily.Active = colunaFormatada[9] == "" ? 0 : Convert.ToInt32(colunaFormatada[9]);
             daily.Arquivo = arquivo;
-            InsereSQL(conn, ref cmd, daily);
+            //InsereSQL(conn, ref cmd, daily);
         }
 
         public static void InsereSQL(SqlConnection conn, ref SqlCommand cmd, Daily daily)
@@ -339,7 +339,13 @@ namespace TratamentoCSV
                 if (coordenada.Contains("."))
                 {
                     string[] coordenadaSeparada = coordenada.Split('.');
-                    
+
+                    if (coordenadaSeparada[1].Length > 8)
+                    {
+                        var str = coordenadaSeparada[1].Remove(7, coordenadaSeparada[1].Length - 8);
+                        coordenadaSeparada[1] = str;
+                    }
+
                     while (coordenadaSeparada[1].Length < 8)
                     {
                         coordenadaSeparada[1] += "0";
