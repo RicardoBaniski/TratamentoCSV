@@ -127,7 +127,7 @@ namespace TratamentoCSV
 
         public static void InsereObj(string[] colunaFormatada)
         {
-            daily.City = colunaFormatada[0] == "" ? "" : colunaFormatada[0].Replace('"', ' ').Trim();
+            daily.City = colunaFormatada[0] == "" ? "" : RemoveAspasDuplas(colunaFormatada[0]);
             daily.ProvinceState = colunaFormatada[1] == "" ? "" : FormataEstado(colunaFormatada[1]);
             daily.CountryRegion = colunaFormatada[2] == "" ? "" : FormataPais(colunaFormatada[2]);
             daily.LastUpdate = Convert.ToDateTime(FormataData(colunaFormatada[3]));
@@ -171,7 +171,7 @@ namespace TratamentoCSV
         public static String FormataPais(string CountryRegion)
         {
             string pais;
-            switch (CountryRegion.Replace('"', ' ').Trim())
+            switch (RemoveAspasDuplas(CountryRegion))
             {
                 case "UK":
                     pais = "United Kingdom";
@@ -189,11 +189,16 @@ namespace TratamentoCSV
             return pais;
         }
 
+        public static string RemoveAspasDuplas(string item)
+        {
+            return item.Replace('"', ' ').Trim();
+        }
+
         public static String FormataEstado(string ProvinceState)
         {
             string estado;
 
-            switch (ProvinceState.Replace('"', ' ').Trim())
+            switch (RemoveAspasDuplas(ProvinceState))
             {
                 case "IL":
                     estado = "Illinois";
