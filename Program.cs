@@ -171,7 +171,7 @@ namespace TratamentoCSV
         public static String FormataPais(string CountryRegion)
         {
             string pais;
-            switch (CountryRegion)
+            switch (CountryRegion.Replace('"', ' ').Trim())
             {
                 case "UK":
                     pais = "United Kingdom";
@@ -186,14 +186,14 @@ namespace TratamentoCSV
                     pais = CountryRegion;
                     break;
             }
-            return pais.Replace('"', ' ').Trim();
+            return pais;
         }
 
         public static String FormataEstado(string ProvinceState)
         {
             string estado;
 
-            switch (ProvinceState)
+            switch (ProvinceState.Replace('"', ' ').Trim())
             {
                 case "IL":
                     estado = "Illinois";
@@ -325,7 +325,7 @@ namespace TratamentoCSV
                     estado = ProvinceState;
                     break;
             }
-            return estado.Replace('"', ' ').Trim();
+            return estado;
         }
     }
 }
