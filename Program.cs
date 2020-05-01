@@ -54,7 +54,7 @@ namespace TratamentoCSV
                             }
                         }
                         count++;
-                        Console.WriteLine("Linha: "+count + " - Auquivo: " + file);
+                        Console.WriteLine("Linha: " + count + " - Arquivo: " + file);
                     }
                 }
             }
@@ -64,6 +64,14 @@ namespace TratamentoCSV
         public static void FormataColunas(string[] linhaSeparada)
         {
             var lista = linhaSeparada.ToList();
+
+            for (int i = 0; i < linhaSeparada.Length; i++)
+            {
+                if (lista[i].Contains('"'))
+                {
+                    lista[i] = RemoveAspasDuplas(lista[i]);
+                }
+            }
 
             if (cabecalho[0].Equals("Province/State") && cabecalho[cabecalho.Length - 1].Equals("Recovered"))
             {
@@ -111,22 +119,29 @@ namespace TratamentoCSV
 
                 if (lista[2].Contains("Korea"))
                 {
-                    lista[3] += lista[2] + " ";
+                    lista[3] = lista[3] + " " + lista[2];
                     lista.RemoveAt(2);
                 }
 
                 if (lista[1].Contains("Bonaire"))
                 {
-                    lista[1] += lista[2] + ", ";
+                    lista[1] = lista[1] + ", " + lista[2];
                     lista.RemoveAt(2);
                 }
             }
+
+            if (lista[1].Contains("Korea") || lista[1].Contains("Bahamas") || lista[1].Contains("Gambia"))
+            {
+                lista[2] = lista[2] + " " + lista[1];
+                lista[1] = "";
+            }
+
             colunaFormatada = lista.ToArray();
         }
 
         public static void InsereObj(string[] colunaFormatada)
         {
-            daily.City = colunaFormatada[0] == "" ? "" : RemoveAspasDuplas(colunaFormatada[0]);
+            daily.City = colunaFormatada[0] == "" ? "" : colunaFormatada[0];
             daily.ProvinceState = colunaFormatada[1] == "" ? "" : FormataEstado(colunaFormatada[1]);
             daily.CountryRegion = colunaFormatada[2] == "" ? "" : FormataPais(colunaFormatada[2]);
             daily.LastUpdate = Convert.ToDateTime(FormataData(colunaFormatada[3]));
@@ -170,7 +185,7 @@ namespace TratamentoCSV
         public static String FormataPais(string CountryRegion)
         {
             string pais;
-            switch (RemoveAspasDuplas(CountryRegion))
+            switch (CountryRegion)
             {
                 case "UK":
                     pais = "United Kingdom";
@@ -185,19 +200,20 @@ namespace TratamentoCSV
                     pais = CountryRegion;
                     break;
             }
-            return pais;
+            return pais.Trim();
         }
 
         public static String RemoveAspasDuplas(string item)
         {
-            return item.Replace('"', ' ').Trim();
+            item = item.Replace('"', ' ');
+            return item.Trim();
         }
 
         public static String FormataEstado(string ProvinceState)
         {
             string estado;
 
-            switch (RemoveAspasDuplas(ProvinceState))
+            switch (ProvinceState)
             {
                 case "IL":
                     estado = "Illinois";
@@ -329,7 +345,7 @@ namespace TratamentoCSV
                     estado = ProvinceState;
                     break;
             }
-            return estado;
+            return estado.Trim();
         }
 
         public static String FormataCoordenada(string coordenada)
@@ -357,7 +373,7 @@ namespace TratamentoCSV
                     coordenada += ",0000000";
                 }
             }
-            return coordenada;
+            return coordenada.Trim();
         }
     }
 }
