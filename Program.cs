@@ -10,7 +10,7 @@ namespace TratamentoCSV
 {
     class Program
     {
-        public static string path = @"C:\TEMP\csse_covid_19_daily_reports\";
+        public static string path = @"C:\TEMP\csse_covid_19_daily_reports\TST";
         public static SqlConnection conn = new SqlConnection(@"Data Source=AVELL\SQLEXPRESS;Initial Catalog=covid;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
         public static SqlCommand cmd = new SqlCommand();
         public static Daily daily = new Daily();
@@ -136,6 +136,64 @@ namespace TratamentoCSV
                 list[1] = "";
             }
 
+            if (list[2].Contains("Faroe Islands") || list[2].Contains("Greenland"))
+            {
+                list[1] = list[2];
+                list[2] = "Denmark";
+            }
+
+            if (list[1].Contains("Hong Kong") || list[1].Contains("Macau"))
+            {
+                list[2] = "China";
+            }
+
+            if (list[2].Contains("Cayman Islands") || list[2].Contains("Gibraltar") || list[2].Contains("Channel Islands"))
+            {
+                list[1] = list[2];
+                list[2] = "United Kingdom";
+            }
+
+            if (list[2].Contains("Saint Barthelemy") || list[2].Contains("Guadeloupe") || list[2].Contains("Reunion") || list[2].Contains("French Guiana") || list[2].Contains("Mayotte") || list[2].Contains("Martinique"))
+            {
+                list[1] = list[2];
+                list[2] = "France";
+            }
+
+            if (list[2].Contains("Aruba") || list[2].Contains("Curacao"))
+            {
+                list[1] = list[2];
+                list[2] = "Netherlands";
+            }
+
+            if (list[2].Contains("Diamond Princess"))
+            {
+                list[1] = list[2];
+                list[2] = "Cruise Ship";
+            }
+
+            if (list[2].Contains("Georgia") || list[2].Contains("Guam") || list[2].Contains("Puerto Rico"))
+            {
+                list[1] = list[2];
+                list[2] = "United States";
+            }
+            if (list[2].Contains("Taipei"))
+            {
+                list[1] = "Taipei";
+                list[2] = "Taiwan";
+            }
+
+            if (list[1].Contains("Chicago"))
+            {
+                list[0] = list[1];
+                list[1] = "Illinois";
+            }
+
+            if (list[0].Contains("Virgin Islands"))
+            {
+                list[1] = list[0];
+                list[0] = "";
+            }
+
             formattedColumn = list.ToArray();
         }
 
@@ -197,6 +255,9 @@ namespace TratamentoCSV
                     break;
                 case "Taiwan*":
                     country = "Taiwan";
+                    break;
+                case "Others":
+                    country = "Cruise Ship";
                     break;
                 default:
                     country = CountryRegion;
@@ -341,6 +402,24 @@ namespace TratamentoCSV
                     state = "Iowa";
                     break;
                 case "U.S.":
+                    state = "";
+                    break;
+                case "Denmark":
+                    state = "";
+                    break;
+                case "Netherlands":
+                    state = "";
+                    break;
+                case "United Kingdom":
+                    state = "";
+                    break;
+                case "UK":
+                    state = "";
+                    break;
+                case "France":
+                    state = "";
+                    break;
+                case "Taiwan":
                     state = "";
                     break;
                 default:
