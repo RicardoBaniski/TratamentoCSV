@@ -8,17 +8,28 @@ namespace TratamentoCSV
 {
     class Daily
     {
-        public string City { get; set; }
-        public string ProvinceState { get; set; }
-        public string CountryRegion { get; set; }
-        public DateTime LastUpdate { get; set; }
-        public string Lat { get; set; }
-        public string Long { get; set; }
-        public int Total { get; set; }
-        public int Confirmed { get; set; }
-        public int Deaths { get; set; }
-        public int Recovered { get; set; }
-        public int Active { get; set; }
-        public string Arquivo { get; set; }
+        private string city;
+        private string provinceState;
+        private string countryRegion;
+        private DateTime lastUpdate;
+        private string lat;
+        private string long_;
+        private int confirmed;
+        private int deaths;
+        private int recovered;
+        private int active;
+        private string archive;
+
+        public string City { get => city; set => city = value; }
+        public string ProvinceState { get => provinceState; set => provinceState = value; }
+        public string CountryRegion { get => countryRegion; set => countryRegion = value; }
+        public DateTime LastUpdate { get => lastUpdate; set => lastUpdate = value; }
+        public string Lat { get => lat; set => lat = value; }
+        public string Long_ { get => long_; set => long_ = value; }
+        public int Confirmed { get => confirmed; set => confirmed = value; }
+        public int Deaths { get => deaths; set => deaths = value; }
+        public int Recovered { get => recovered; set => recovered = value; }
+        public int Active { get => active; set => active = value; }
+        public string Archive { get => archive; set => archive = value; }
     }
 }

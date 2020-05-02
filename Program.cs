@@ -10,21 +10,21 @@ namespace TratamentoCSV
 {
     class Program
     {
-        public static string arquivo;
-        public static string[] cabecalho;
-        public static string[] colunaFormatada;
+        public static string path = @"C:\TEMP\csse_covid_19_daily_reports\";
         public static SqlConnection conn = new SqlConnection(@"Data Source=AVELL\SQLEXPRESS;Initial Catalog=covid;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
         public static SqlCommand cmd = new SqlCommand();
         public static Daily daily = new Daily();
+        public static string[] header;
+        public static string[] formattedColumn;
+        public static string archive;
         public static void Main(string[] args)
         {
-            string path = @"C:\TEMP\csse_covid_19_daily_reports\";
             string[] files = Directory.GetFiles(path, "*.csv");
 
             foreach (var file in files)
             {
                 int count = 1;
-                arquivo = file;
+                archive = file;
 
                 if (File.Exists(file))
                 {
@@ -32,348 +32,350 @@ namespace TratamentoCSV
 
                     while (true)
                     {
-                        string linha = reader.ReadLine();
+                        string line = reader.ReadLine();
 
-                        if (linha == null)
+                        if (line == null)
                         {
                             break;
                         }
                         else
                         {
-                            string[] linhaSeparada = linha.Split(',');
+                            string[] separationColumns = line.Split(',');
 
                             if (count == 1)
                             {
-                                cabecalho = linhaSeparada;
+                                header = separationColumns;
                             }
 
                             if (count > 1)
                             {
-                                FormataColunas(linhaSeparada);
-                                InsereObj(colunaFormatada);
+                                FormatsColumns(separationColumns);
+                                InsertObj(formattedColumn);
                             }
                         }
                         count++;
-                        Console.WriteLine("Linha: " + count + " - Arquivo: " + file);
+                        Console.WriteLine("Line: " + count + " - File: " + file);
                     }
                 }
             }
-            Console.WriteLine(">>>>>>>>>>>>>  CONCLUIDO  <<<<<<<<<<<<<");
+            Console.WriteLine(">>>>>>>>>>>>>  SUCCESSFULLY COMPLETED  <<<<<<<<<<<<<");
         }
 
-        public static void FormataColunas(string[] linhaSeparada)
+        public static void FormatsColumns(string[] separationColumns)
         {
-            var lista = linhaSeparada.ToList();
+            var list = separationColumns.ToList();
 
-            for (int i = 0; i < linhaSeparada.Length; i++)
+            for (int i = 0; i < separationColumns.Length; i++)
             {
-                if (lista[i].Contains('"'))
+                if (list[i].Contains('"'))
                 {
-                    lista[i] = RemoveAspasDuplas(lista[i]);
+                    list[i] = RemovesQuotes(list[i]);
                 }
             }
 
-            if (cabecalho[0].Equals("Province/State") && cabecalho[cabecalho.Length - 1].Equals("Recovered"))
+            if (header[0].Equals("Province/State") && header[header.Length - 1].Equals("Recovered"))
             {
-                if (linhaSeparada.Length < 7)
+                if (separationColumns.Length < 7)
                 {
-                    lista.Insert(0, "");
-                    lista.Insert(4, "");
-                    lista.Insert(5, "");
-                    lista.Insert(9, "");
+                    list.Insert(0, "");
+                    list.Insert(4, "");
+                    list.Insert(5, "");
+                    list.Insert(9, "");
                 }
                 else
                 {
-                    lista.Insert(4, "");
-                    lista.Insert(5, "");
-                    lista.Insert(9, "");
+                    list.Insert(4, "");
+                    list.Insert(5, "");
+                    list.Insert(9, "");
                 }
             }
 
-            if (cabecalho[0].Equals("Province/State") && cabecalho[cabecalho.Length - 1].Equals("Longitude"))
+            if (header[0].Equals("Province/State") && header[header.Length - 1].Equals("Longitude"))
             {
-                if (linhaSeparada.Length < 9)
+                if (separationColumns.Length < 9)
                 {
-                    lista.Insert(0, "");
-                    lista.Insert(4, "");
-                    lista.Insert(5, "");
-                    lista[4] = lista[9];
-                    lista[5] = lista[10];
-                    lista[9] = "";
-                    lista.RemoveAt(10);
+                    list.Insert(0, "");
+                    list.Insert(4, "");
+                    list.Insert(5, "");
+                    list[4] = list[9];
+                    list[5] = list[10];
+                    list[9] = "";
+                    list.RemoveAt(10);
                 }
                 else
                 {
-                    lista.Insert(4, "");
-                    lista.Insert(5, "");
-                    lista[4] = lista[9];
-                    lista[5] = lista[10];
-                    lista[9] = "";
-                    lista.RemoveAt(10);
+                    list.Insert(4, "");
+                    list.Insert(5, "");
+                    list[4] = list[9];
+                    list[5] = list[10];
+                    list[9] = "";
+                    list.RemoveAt(10);
                 }
             }
 
-            if (cabecalho[0].Equals("FIPS"))
+            if (header[0].Equals("FIPS"))
             {
-                lista.RemoveAt(0);
+                list.RemoveAt(0);
 
-                if (lista[2].Contains("Korea"))
+                if (list[2].Contains("Korea"))
                 {
-                    lista[3] = lista[3] + " " + lista[2];
-                    lista.RemoveAt(2);
+                    list[3] = list[3] + " " + list[2];
+                    list.RemoveAt(2);
                 }
 
-                if (lista[1].Contains("Bonaire"))
+                if (list[1].Contains("Bonaire"))
                 {
-                    lista[1] = lista[1] + ", " + lista[2];
-                    lista.RemoveAt(2);
+                    list[1] = list[1] + ", " + list[2];
+                    list.RemoveAt(2);
                 }
             }
 
-            if (lista[1].Contains("Korea") || lista[1].Contains("Bahamas") || lista[1].Contains("Gambia"))
+            if (list[1].Contains("Korea") || list[1].Contains("Bahamas") || list[1].Contains("Gambia"))
             {
-                lista[2] = lista[2] + " " + lista[1];
-                lista[1] = "";
+                list[2] = list[2] + " " + list[1];
+                list[1] = "";
             }
 
-            colunaFormatada = lista.ToArray();
+            formattedColumn = list.ToArray();
         }
 
-        public static void InsereObj(string[] colunaFormatada)
+        public static void InsertObj(string[] formattedColumn)
         {
-            daily.City = colunaFormatada[0] == "" ? "" : colunaFormatada[0];
-            daily.ProvinceState = colunaFormatada[1] == "" ? "" : FormataEstado(colunaFormatada[1]);
-            daily.CountryRegion = colunaFormatada[2] == "" ? "" : FormataPais(colunaFormatada[2]);
-            daily.LastUpdate = Convert.ToDateTime(FormataData(colunaFormatada[3]));
-            daily.Lat = FormataCoordenada(colunaFormatada[4]);
-            daily.Long = FormataCoordenada(colunaFormatada[5]);
-            daily.Confirmed = colunaFormatada[6] == "" ? 0 : Convert.ToInt32(colunaFormatada[6]);
-            daily.Deaths = colunaFormatada[7] == "" ? 0 : Convert.ToInt32(colunaFormatada[7]);
-            daily.Recovered = colunaFormatada[8] == "" ? 0 : Convert.ToInt32(colunaFormatada[8]);
-            daily.Active = colunaFormatada[9] == "" ? 0 : Convert.ToInt32(colunaFormatada[9]);
-            daily.Arquivo = arquivo;
-            InsereSQL(conn, ref cmd, daily);
+            daily.City = formattedColumn[0] == "" ? "" : formattedColumn[0];
+            daily.ProvinceState = formattedColumn[1] == "" ? "" : FormatsState(formattedColumn[1]);
+            daily.CountryRegion = formattedColumn[2] == "" ? "" : FormatsCountry(formattedColumn[2]);
+            daily.LastUpdate = Convert.ToDateTime(FormatsDate(formattedColumn[3]));
+            daily.Lat = FormatsCoordinate(formattedColumn[4]);
+            daily.Long_ = FormatsCoordinate(formattedColumn[5]);
+            daily.Confirmed = formattedColumn[6] == "" ? 0 : Convert.ToInt32(formattedColumn[6]);
+            daily.Deaths = formattedColumn[7] == "" ? 0 : Convert.ToInt32(formattedColumn[7]);
+            daily.Recovered = formattedColumn[8] == "" ? 0 : Convert.ToInt32(formattedColumn[8]);
+            daily.Active = formattedColumn[9] == "" ? 0 : Convert.ToInt32(formattedColumn[9]);
+            daily.Archive = archive;
+            InsertSQL(conn, ref cmd, daily);
         }
 
-        public static void InsereSQL(SqlConnection conn, ref SqlCommand cmd, Daily daily)
+        public static void InsertSQL(SqlConnection conn, ref SqlCommand cmd, Daily daily)
         {
             conn.Open();
-            cmd = new SqlCommand("spInsereDaily", conn);
-            cmd.CommandType = CommandType.StoredProcedure;
+            cmd = new SqlCommand("spInsereDaily", conn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
             cmd.Parameters.Add("@City", SqlDbType.VarChar).Value = daily.City;
             cmd.Parameters.Add("@ProvinceState", SqlDbType.VarChar).Value = daily.ProvinceState;
             cmd.Parameters.Add("@CountryRegion", SqlDbType.VarChar).Value = daily.CountryRegion;
             cmd.Parameters.Add("@LastUpdate", SqlDbType.DateTime).Value = daily.LastUpdate;
             cmd.Parameters.Add("@Lat", SqlDbType.VarChar).Value = daily.Lat;
-            cmd.Parameters.Add("@Long", SqlDbType.VarChar).Value = daily.Long;
+            cmd.Parameters.Add("@Long", SqlDbType.VarChar).Value = daily.Long_;
             cmd.Parameters.Add("@Confirmed", SqlDbType.Int).Value = daily.Confirmed;
             cmd.Parameters.Add("@Deaths", SqlDbType.Int).Value = daily.Deaths;
             cmd.Parameters.Add("@Recovered", SqlDbType.Int).Value = daily.Recovered;
             cmd.Parameters.Add("@Active", SqlDbType.Int).Value = daily.Active;
-            cmd.Parameters.Add("@Arquivo", SqlDbType.VarChar).Value = daily.Arquivo;
+            cmd.Parameters.Add("@Archive", SqlDbType.VarChar).Value = daily.Archive;
             cmd.ExecuteNonQuery();
             conn.Close();
         }
 
-        public static String FormataData(string LastUpdate)
+        public static String FormatsDate(string LastUpdate)
         {
             CultureInfo MyCultureInfo = new CultureInfo("en-US");
             DateTime MyDateTime = DateTime.Parse(LastUpdate, MyCultureInfo);
             return MyDateTime.ToString();
         }
 
-        public static String FormataPais(string CountryRegion)
+        public static String FormatsCountry(string CountryRegion)
         {
-            string pais;
+            string country;
             switch (CountryRegion)
             {
                 case "UK":
-                    pais = "United Kingdom";
+                    country = "United Kingdom";
                     break;
                 case "US":
-                    pais = "United States";
+                    country = "United States";
                     break;
                 case "Taiwan*":
-                    pais = "Taiwan";
+                    country = "Taiwan";
                     break;
                 default:
-                    pais = CountryRegion;
+                    country = CountryRegion;
                     break;
             }
-            return pais.Trim();
+            return country.Trim();
         }
 
-        public static String RemoveAspasDuplas(string item)
+        public static String RemovesQuotes(string item)
         {
             item = item.Replace('"', ' ');
             return item.Trim();
         }
 
-        public static String FormataEstado(string ProvinceState)
+        public static String FormatsState(string ProvinceState)
         {
-            string estado;
+            string state;
 
             switch (ProvinceState)
             {
                 case "IL":
-                    estado = "Illinois";
+                    state = "Illinois";
                     break;
                 case "CA":
-                    estado = "California";
+                    state = "California";
                     break;
                 case "CA (From Diamond Princess)":
-                    estado = "California (From Diamond Princess)";
+                    state = "California (From Diamond Princess)";
                     break;
                 case "CO":
-                    estado = "Colorado";
+                    state = "Colorado";
                     break;
                 case "D.C.":
-                    estado = "District of Columbia";
+                    state = "District of Columbia";
                     break;
                 case "FL":
-                    estado = "Florida";
+                    state = "Florida";
                     break;
                 case "GA":
-                    estado = "Georgia";
+                    state = "Georgia";
                     break;
                 case "NV":
-                    estado = "Nevada";
+                    state = "Nevada";
                     break;
                 case "NY":
-                    estado = "New York";
+                    state = "New York";
                     break;
                 case "OR":
-                    estado = "Oregon";
+                    state = "Oregon";
                     break;
                 case "PA":
-                    estado = "Pennsylvania";
+                    state = "Pennsylvania";
                     break;
                 case "QC":
-                    estado = "Quebec";
+                    state = "Quebec";
                     break;
                 case "RI":
-                    estado = "Rhode Island";
+                    state = "Rhode Island";
                     break;
                 case "SC":
-                    estado = "South Carolina";
+                    state = "South Carolina";
                     break;
                 case "TN":
-                    estado = "Tennessee";
+                    state = "Tennessee";
                     break;
                 case "UT":
-                    estado = "Utah";
+                    state = "Utah";
                     break;
                 case "VA":
-                    estado = "Virginia";
+                    state = "Virginia";
                     break;
                 case "WA":
-                    estado = "Washington";
+                    state = "Washington";
                     break;
                 case "WI":
-                    estado = "Wisconsin";
+                    state = "Wisconsin";
                     break;
                 case "CT":
-                    estado = "Connecticut";
+                    state = "Connecticut";
                     break;
                 case "HI":
-                    estado = "Havai";
+                    state = "Havai";
                     break;
                 case "IN":
-                    estado = "Indiana";
+                    state = "Indiana";
                     break;
                 case "KS":
-                    estado = "Kansas";
+                    state = "Kansas";
                     break;
                 case "KY":
-                    estado = "Kentucky";
+                    state = "Kentucky";
                     break;
                 case "OK":
-                    estado = "Oklahoma";
+                    state = "Oklahoma";
                     break;
                 case "LA":
-                    estado = "Luisiana";
+                    state = "Luisiana";
                     break;
                 case "MA":
-                    estado = "Massachusetts";
+                    state = "Massachusetts";
                     break;
                 case "MD":
-                    estado = "Maryland";
+                    state = "Maryland";
                     break;
                 case "MN":
-                    estado = "Minnesota";
+                    state = "Minnesota";
                     break;
                 case "MO":
-                    estado = "Missouri";
+                    state = "Missouri";
                     break;
                 case "NC":
-                    estado = "North Carolina";
+                    state = "North Carolina";
                     break;
                 case "NE":
-                    estado = "Nebraska";
+                    state = "Nebraska";
                     break;
                 case "NE (From Diamond Princess)":
-                    estado = "Nebraska (From Diamond Princess)";
+                    state = "Nebraska (From Diamond Princess)";
                     break;
                 case "NH":
-                    estado = "New Hampshire";
+                    state = "New Hampshire";
                     break;
                 case "NJ":
-                    estado = "New Jersey";
+                    state = "New Jersey";
                     break;
                 case "ON":
-                    estado = "Ontario";
+                    state = "Ontario";
                     break;
                 case "TX":
-                    estado = "Texas";
+                    state = "Texas";
                     break;
                 case "TX (From Diamond Princess)":
-                    estado = "Texas (From Diamond Princess)";
+                    state = "Texas (From Diamond Princess)";
                     break;
                 case "VT":
-                    estado = "Vermont";
+                    state = "Vermont";
                     break;
                 case "AZ":
-                    estado = "Arizona";
+                    state = "Arizona";
                     break;
                 case "IA":
-                    estado = "Iowa";
+                    state = "Iowa";
                     break;
                 case "U.S.":
-                    estado = "";
+                    state = "";
                     break;
                 default:
-                    estado = ProvinceState;
+                    state = ProvinceState;
                     break;
             }
-            return estado.Trim();
+            return state.Trim();
         }
 
-        public static String FormataCoordenada(string coordenada)
+        public static String FormatsCoordinate(string coordinate)
         {
-            if (coordenada != "")
+            if (coordinate != "")
             {
-                if (coordenada.Contains("."))
+                if (coordinate.Contains("."))
                 {
-                    string[] coordenadaSeparada = coordenada.Split('.');
+                    string[] separateCoordinate = coordinate.Split('.');
 
-                    if (coordenadaSeparada[1].Length > 8)
+                    if (separateCoordinate[1].Length > 8)
                     {
-                        var str = coordenadaSeparada[1].Remove(7, coordenadaSeparada[1].Length - 8);
-                        coordenadaSeparada[1] = str;
+                        var str = separateCoordinate[1].Remove(7, separateCoordinate[1].Length - 8);
+                        separateCoordinate[1] = str;
                     }
 
-                    while (coordenadaSeparada[1].Length < 8)
+                    while (separateCoordinate[1].Length < 8)
                     {
-                        coordenadaSeparada[1] += "0";
+                        separateCoordinate[1] += "0";
                     }
-                    coordenada = coordenadaSeparada[0] + "," + coordenadaSeparada[1];
+                    coordinate = separateCoordinate[0] + "," + separateCoordinate[1];
                 }
                 else
                 {
-                    coordenada += ",0000000";
+                    coordinate += ",0000000";
                 }
             }
-            return coordenada.Trim();
+            return coordinate.Trim();
         }
     }
 }
