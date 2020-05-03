@@ -454,6 +454,16 @@ namespace TratamentoCSV
                     coordinate += ",0000000";
                 }
             }
+
+            if (coordinate != "")
+            {
+                decimal intCoordinate = Convert.ToDecimal(coordinate);
+                
+                if(intCoordinate == 0)
+                {
+                    coordinate = "";
+                }
+            }
             return coordinate.Trim();
         }
     }
