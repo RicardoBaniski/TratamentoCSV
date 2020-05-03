@@ -49,7 +49,7 @@ namespace TratamentoCSV
 
                             if (count > 1)
                             {
-                                FormatsColumns(separationColumns);
+                                FormatColumns(separationColumns);
                                 InsertObj(formattedColumn);
                             }
                         }
@@ -61,7 +61,7 @@ namespace TratamentoCSV
             Console.WriteLine(">>>>>>>>>>>>>  SUCCESSFULLY COMPLETED  <<<<<<<<<<<<<");
         }
 
-        public static void FormatsColumns(string[] separationColumns)
+        public static void FormatColumns(string[] separationColumns)
         {
             var list = separationColumns.ToList();
 
@@ -69,7 +69,7 @@ namespace TratamentoCSV
             {
                 if (list[i].Contains('"'))
                 {
-                    list[i] = RemovesQuotes(list[i]);
+                    list[i] = RemoveQuotes(list[i]);
                 }
             }
 
@@ -200,15 +200,15 @@ namespace TratamentoCSV
         public static void InsertObj(string[] formattedColumn)
         {
             daily.City = formattedColumn[0] == "" ? "" : formattedColumn[0];
-            daily.ProvinceState = formattedColumn[1] == "" ? "" : FormatsState(formattedColumn[1]);
-            daily.CountryRegion = formattedColumn[2] == "" ? "" : FormatsCountry(formattedColumn[2]);
-            daily.LastUpdate = Convert.ToDateTime(FormatsDate(formattedColumn[3]));
-            daily.Lat = FormatsCoordinate(formattedColumn[4]);
-            daily.Long_ = FormatsCoordinate(formattedColumn[5]);
+            daily.ProvinceState = formattedColumn[1] == "" ? "" : FormatState(formattedColumn[1]);
+            daily.CountryRegion = formattedColumn[2] == "" ? "" : FormatCountry(formattedColumn[2]);
+            daily.LastUpdate = Convert.ToDateTime(FormatDate(formattedColumn[3]));
+            daily.Lat = FormatCoordinate(formattedColumn[4]);
+            daily.Long_ = FormatCoordinate(formattedColumn[5]);
             daily.Confirmed = formattedColumn[6] == "" ? 0 : Convert.ToInt32(formattedColumn[6]);
             daily.Deaths = formattedColumn[7] == "" ? 0 : Convert.ToInt32(formattedColumn[7]);
             daily.Recovered = formattedColumn[8] == "" ? 0 : Convert.ToInt32(formattedColumn[8]);
-            daily.Active = formattedColumn[9] == "" ? 0 : Convert.ToInt32(formattedColumn[9]);
+            daily.Active = CalculateActive();
             daily.Archive = archive;
             InsertSQL(conn, ref cmd, daily);
         }
@@ -235,14 +235,14 @@ namespace TratamentoCSV
             conn.Close();
         }
 
-        public static String FormatsDate(string LastUpdate)
+        public static String FormatDate(string LastUpdate)
         {
             CultureInfo MyCultureInfo = new CultureInfo("en-US");
             DateTime MyDateTime = DateTime.Parse(LastUpdate, MyCultureInfo);
             return MyDateTime.ToString();
         }
 
-        public static String FormatsCountry(string CountryRegion)
+        public static String FormatCountry(string CountryRegion)
         {
             string country;
             switch (CountryRegion)
@@ -266,13 +266,13 @@ namespace TratamentoCSV
             return country.Trim();
         }
 
-        public static String RemovesQuotes(string item)
+        public static String RemoveQuotes(string item)
         {
             item = item.Replace('"', ' ');
             return item.Trim();
         }
 
-        public static String FormatsState(string ProvinceState)
+        public static String FormatState(string ProvinceState)
         {
             string state;
 
@@ -429,7 +429,7 @@ namespace TratamentoCSV
             return state.Trim();
         }
 
-        public static String FormatsCoordinate(string coordinate)
+        public static String FormatCoordinate(string coordinate)
         {
             if (coordinate != "")
             {
@@ -458,13 +458,19 @@ namespace TratamentoCSV
             if (coordinate != "")
             {
                 decimal intCoordinate = Convert.ToDecimal(coordinate);
-                
-                if(intCoordinate == 0)
+
+                if (intCoordinate == 0)
                 {
                     coordinate = "";
                 }
             }
             return coordinate.Trim();
+        }
+
+        public static int CalculateActive()
+        {
+            int item = daily.Confirmed - (daily.Deaths + daily.Recovered);
+            return item;
         }
     }
 }
