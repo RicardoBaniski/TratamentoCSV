@@ -1,0 +1,138 @@
+USE [covid]
+GO
+
+/****** Object:  Table [dbo].[Daily]    Script Date: 04/05/2020 18:15:25 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Daily](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[CityId] [int] NOT NULL,
+	[ProvinceStateId] [int] NOT NULL,
+	[CountryRegionId] [int] NOT NULL,
+	[LastUpdateId] [int] NOT NULL,
+	[LatId] [int] NOT NULL,
+	[LongId] [int] NOT NULL,
+	[ConfirmedId] [int] NULL,
+	[DeathsId] [int] NULL,
+	[RecoveredId] [int] NULL,
+	[ActiveId] [int] NULL,
+	[ArchiveId] [int] NOT NULL,
+	[RecordedId] [int] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[Daily]  WITH CHECK ADD  CONSTRAINT [FK_Daily_Archive] FOREIGN KEY([ArchiveId])
+REFERENCES [dbo].[Archive] ([id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[Daily] CHECK CONSTRAINT [FK_Daily_Archive]
+GO
+
+ALTER TABLE [dbo].[Daily]  WITH CHECK ADD  CONSTRAINT [FK_Daily_City] FOREIGN KEY([CityId])
+REFERENCES [dbo].[City] ([id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[Daily] CHECK CONSTRAINT [FK_Daily_City]
+GO
+
+ALTER TABLE [dbo].[Daily]  WITH CHECK ADD  CONSTRAINT [FK_Daily_CountryRegion] FOREIGN KEY([CountryRegionId])
+REFERENCES [dbo].[CountryRegion] ([id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[Daily] CHECK CONSTRAINT [FK_Daily_CountryRegion]
+GO
+
+ALTER TABLE [dbo].[Daily]  WITH CHECK ADD  CONSTRAINT [FK_Daily_LastUpdate] FOREIGN KEY([LastUpdateId])
+REFERENCES [dbo].[LastUpdate] ([id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[Daily] CHECK CONSTRAINT [FK_Daily_LastUpdate]
+GO
+
+ALTER TABLE [dbo].[Daily]  WITH CHECK ADD  CONSTRAINT [FK_Daily_Lat] FOREIGN KEY([LatId])
+REFERENCES [dbo].[Lat] ([id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[Daily] CHECK CONSTRAINT [FK_Daily_Lat]
+GO
+
+ALTER TABLE [dbo].[Daily]  WITH CHECK ADD  CONSTRAINT [FK_Daily_Long] FOREIGN KEY([LongId])
+REFERENCES [dbo].[Long] ([id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[Daily] CHECK CONSTRAINT [FK_Daily_Long]
+GO
+
+ALTER TABLE [dbo].[Daily]  WITH CHECK ADD  CONSTRAINT [FK_Daily_ProvinceState] FOREIGN KEY([ProvinceStateId])
+REFERENCES [dbo].[ProvinceState] ([id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[Daily] CHECK CONSTRAINT [FK_Daily_ProvinceState]
+GO
+
+ALTER TABLE [dbo].[Daily]  WITH CHECK ADD  CONSTRAINT [FK_Daily_Recorded] FOREIGN KEY([RecordedId])
+REFERENCES [dbo].[Recorded] ([id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[Daily] CHECK CONSTRAINT [FK_Daily_Recorded]
+GO
+
+ALTER TABLE [dbo].[Daily]  WITH CHECK ADD  CONSTRAINT [FK_Daily_Confirmed] FOREIGN KEY([ConfirmedId])
+REFERENCES [dbo].[Confirmed] ([id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[Daily] CHECK CONSTRAINT [FK_Daily_Confirmed]
+GO
+
+ALTER TABLE [dbo].[Daily]  WITH CHECK ADD  CONSTRAINT [FK_Daily_Deaths] FOREIGN KEY([DeathsId])
+REFERENCES [dbo].[Deaths] ([id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[Daily] CHECK CONSTRAINT [FK_Daily_Deaths]
+GO
+
+ALTER TABLE [dbo].[Daily]  WITH CHECK ADD  CONSTRAINT [FK_Daily_Active] FOREIGN KEY([ActiveId])
+REFERENCES [dbo].[Active] ([id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[Daily] CHECK CONSTRAINT [FK_Daily_Active]
+GO
+
+ALTER TABLE [dbo].[Daily]  WITH CHECK ADD  CONSTRAINT [FK_Daily_Recovered] FOREIGN KEY([RecoveredId])
+REFERENCES [dbo].[Recovered] ([id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[Daily] CHECK CONSTRAINT [FK_Daily_Recovered]
+GO
