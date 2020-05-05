@@ -10,7 +10,7 @@ namespace TratamentoCSV
 {
     class Program
     {
-        public static string path = @"C:\TEMP\csse_covid_19_daily_reports\TST";
+        public static string path = @"C:\TEMP\csse_covid_19_daily_reports";
         public static SqlConnection conn = new SqlConnection(@"Data Source=AVELL\SQLEXPRESS;Initial Catalog=covid;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
         public static SqlCommand cmd = new SqlCommand();
         public static Daily daily = new Daily();
