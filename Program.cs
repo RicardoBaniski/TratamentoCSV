@@ -212,8 +212,6 @@ namespace TratamentoCSV
             daily.ProvinceState = formattedColumn[1] == "" ? "" : FormatState(formattedColumn[1]);
             daily.CountryRegion = formattedColumn[2] == "" ? "" : FormatCountry(formattedColumn[2]);
             daily.LastUpdate = Convert.ToDateTime(FormatDate(formattedColumn[3]));
-            //daily.Lat = FormatCoordinate(formattedColumn[4]);
-            //daily.Long_ = FormatCoordinate(formattedColumn[5]); 
             daily.Lat = formattedColumn[4] == "" ? "0" : formattedColumn[4];
             daily.Long_ = formattedColumn[5] == "" ? "0" : formattedColumn[5];
             daily.Confirmed = formattedColumn[6] == "" ? 0 : Convert.ToInt32(formattedColumn[6]);
