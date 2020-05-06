@@ -220,7 +220,7 @@ namespace TratamentoCSV
             daily.Recovered = formattedColumn[8] == "" ? 0 : Convert.ToInt32(formattedColumn[8]);
             daily.Active = formattedColumn[9] == "" ? 0 : Convert.ToInt32(formattedColumn[9]);
             daily.Archive = archive;
-            //InsertSQL(conn, ref cmd, daily);
+            InsertSQL(conn, ref cmd, daily);
         }
 
         public static void InsertSQL(SqlConnection conn, ref SqlCommand cmd, Daily daily)
