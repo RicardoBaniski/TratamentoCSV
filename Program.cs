@@ -12,7 +12,7 @@ namespace TratamentoCSV
 {
     class Program
     {
-        public static string path = @"C:\TEMP\csse_covid_19_daily_reports";
+        public static string path = @"..\..\csse_covid_19_daily_reports";
         public static SqlConnection conn = new SqlConnection(@"Data Source=AVELL\SQLEXPRESS;Initial Catalog=covid;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
         public static SqlCommand cmd = new SqlCommand();
         public static Daily daily = new Daily();
@@ -220,7 +220,7 @@ namespace TratamentoCSV
             daily.Recovered = formattedColumn[8] == "" ? 0 : Convert.ToInt32(formattedColumn[8]);
             daily.Active = formattedColumn[9] == "" ? 0 : Convert.ToInt32(formattedColumn[9]);
             daily.Archive = archive;
-            InsertSQL(conn, ref cmd, daily);
+            //InsertSQL(conn, ref cmd, daily);
         }
 
         public static void InsertSQL(SqlConnection conn, ref SqlCommand cmd, Daily daily)
