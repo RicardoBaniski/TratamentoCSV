@@ -1,11 +1,12 @@
-﻿using System;
+﻿/*By Ricardo Baniski / Luis Gritz */
+
+using System;
 using System.Text;
 using System.IO;
 using System.Data.SqlClient;
 using System.Data;
 using System.Linq;
 using System.Globalization;
-using System.Collections.Generic;
 
 namespace TratamentoCSV
 {
