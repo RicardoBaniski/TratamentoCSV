@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Linq;
 using System.Globalization;
+using System.Collections.Generic;
 
 namespace TratamentoCSV
 {
@@ -50,7 +51,9 @@ namespace TratamentoCSV
                             if (count > 1)
                             {
                                 FormatColumns(separationColumns);
-                                InsertObj(formattedColumn);
+                                
+                                if(!formattedColumn[0].Contains("Unassigned"))
+                                    InsertObj(formattedColumn);
                             }
                         }
                         count++;
@@ -194,6 +197,12 @@ namespace TratamentoCSV
                 list[0] = "";
             }
 
+            if (list[9] != "")
+            {
+                if (Convert.ToInt32(list[9]) < 0)
+                    list[0] =  "Unassigned";
+            }
+
             formattedColumn = list.ToArray();
         }
 
@@ -208,7 +217,7 @@ namespace TratamentoCSV
             daily.Confirmed = formattedColumn[6] == "" ? 0 : Convert.ToInt32(formattedColumn[6]);
             daily.Deaths = formattedColumn[7] == "" ? 0 : Convert.ToInt32(formattedColumn[7]);
             daily.Recovered = formattedColumn[8] == "" ? 0 : Convert.ToInt32(formattedColumn[8]);
-            daily.Active = CalculateActive();
+            daily.Active = formattedColumn[9] == "" ? 0 : Convert.ToInt32(formattedColumn[9]);
             daily.Archive = archive;
             InsertSQL(conn, ref cmd, daily);
         }
@@ -422,6 +431,9 @@ namespace TratamentoCSV
                 case "Taiwan":
                     state = "";
                     break;
+                case "Recovered":
+                    state = "";
+                    break;
                 default:
                     state = ProvinceState;
                     break;
@@ -467,10 +479,9 @@ namespace TratamentoCSV
             return coordinate.Trim();
         }
 
-        public static int CalculateActive()
+        public static void DiscardLine()
         {
-            int item = daily.Confirmed - (daily.Deaths + daily.Recovered);
-            return item;
+            Console.WriteLine("LINHA DESCARTADA");
         }
     }
 }
