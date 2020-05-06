@@ -212,8 +212,10 @@ namespace TratamentoCSV
             daily.ProvinceState = formattedColumn[1] == "" ? "" : FormatState(formattedColumn[1]);
             daily.CountryRegion = formattedColumn[2] == "" ? "" : FormatCountry(formattedColumn[2]);
             daily.LastUpdate = Convert.ToDateTime(FormatDate(formattedColumn[3]));
-            daily.Lat = FormatCoordinate(formattedColumn[4]);
-            daily.Long_ = FormatCoordinate(formattedColumn[5]);
+            //daily.Lat = FormatCoordinate(formattedColumn[4]);
+            //daily.Long_ = FormatCoordinate(formattedColumn[5]); 
+            daily.Lat = formattedColumn[4] == "" ? "0" : formattedColumn[4];
+            daily.Long_ = formattedColumn[5] == "" ? "0" : formattedColumn[5];
             daily.Confirmed = formattedColumn[6] == "" ? 0 : Convert.ToInt32(formattedColumn[6]);
             daily.Deaths = formattedColumn[7] == "" ? 0 : Convert.ToInt32(formattedColumn[7]);
             daily.Recovered = formattedColumn[8] == "" ? 0 : Convert.ToInt32(formattedColumn[8]);
@@ -441,47 +443,47 @@ namespace TratamentoCSV
             return state.Trim();
         }
 
-        public static String FormatCoordinate(string coordinate)
-        {
-            if (coordinate != "")
-            {
-                if (coordinate.Contains("."))
-                {
-                    string[] separateCoordinate = coordinate.Split('.');
+        //public static String FormatCoordinate(string coordinate)
+        //{
+        //    if (coordinate != "")
+        //    {
+        //        if (coordinate.Contains("."))
+        //        {
+        //            string[] separateCoordinate = coordinate.Split('.');
 
-                    if (separateCoordinate[1].Length > 8)
-                    {
-                        var str = separateCoordinate[1].Remove(7, separateCoordinate[1].Length - 8);
-                        separateCoordinate[1] = str;
-                    }
+        //            if (separateCoordinate[1].Length > 8)
+        //            {
+        //                var str = separateCoordinate[1].Remove(7, separateCoordinate[1].Length - 8);
+        //                separateCoordinate[1] = str;
+        //            }
 
-                    while (separateCoordinate[1].Length < 8)
-                    {
-                        separateCoordinate[1] += "0";
-                    }
-                    coordinate = separateCoordinate[0] + "," + separateCoordinate[1];
-                }
-                else
-                {
-                    coordinate += ",0000000";
-                }
-            }
+        //            while (separateCoordinate[1].Length < 8)
+        //            {
+        //                separateCoordinate[1] += "0";
+        //            }
+        //            coordinate = separateCoordinate[0] + "," + separateCoordinate[1];
+        //        }
+        //        else
+        //        {
+        //            coordinate += ",0000000";
+        //        }
+        //    }
 
-            if (coordinate != "")
-            {
-                decimal intCoordinate = Convert.ToDecimal(coordinate);
+        //    if (coordinate != "")
+        //    {
+        //        decimal intCoordinate = Convert.ToDecimal(coordinate);
 
-                if (intCoordinate == 0)
-                {
-                    coordinate = "";
-                }
-            }
-            return coordinate.Trim();
-        }
+        //        if (intCoordinate == 0)
+        //        {
+        //            coordinate = "";
+        //        }
+        //    }
+        //    return coordinate.Trim();
+        //}
 
-        public static void DiscardLine()
-        {
-            Console.WriteLine("LINHA DESCARTADA");
-        }
+        //public static void DiscardLine()
+        //{
+        //    Console.WriteLine("LINHA DESCARTADA");
+        //}
     }
 }
