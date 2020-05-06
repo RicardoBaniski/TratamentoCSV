@@ -51,8 +51,8 @@ namespace TratamentoCSV
                             if (count > 1)
                             {
                                 FormatColumns(separationColumns);
-                                
-                                if(!formattedColumn[0].Contains("Unassigned"))
+
+                                if (!formattedColumn[0].Contains("Unassigned"))
                                     InsertObj(formattedColumn);
                             }
                         }
@@ -200,7 +200,7 @@ namespace TratamentoCSV
             if (list[9] != "")
             {
                 if (Convert.ToInt32(list[9]) < 0)
-                    list[0] =  "Unassigned";
+                    list[0] = "Unassigned";
             }
 
             formattedColumn = list.ToArray();
@@ -442,48 +442,5 @@ namespace TratamentoCSV
             }
             return state.Trim();
         }
-
-        //public static String FormatCoordinate(string coordinate)
-        //{
-        //    if (coordinate != "")
-        //    {
-        //        if (coordinate.Contains("."))
-        //        {
-        //            string[] separateCoordinate = coordinate.Split('.');
-
-        //            if (separateCoordinate[1].Length > 8)
-        //            {
-        //                var str = separateCoordinate[1].Remove(7, separateCoordinate[1].Length - 8);
-        //                separateCoordinate[1] = str;
-        //            }
-
-        //            while (separateCoordinate[1].Length < 8)
-        //            {
-        //                separateCoordinate[1] += "0";
-        //            }
-        //            coordinate = separateCoordinate[0] + "," + separateCoordinate[1];
-        //        }
-        //        else
-        //        {
-        //            coordinate += ",0000000";
-        //        }
-        //    }
-
-        //    if (coordinate != "")
-        //    {
-        //        decimal intCoordinate = Convert.ToDecimal(coordinate);
-
-        //        if (intCoordinate == 0)
-        //        {
-        //            coordinate = "";
-        //        }
-        //    }
-        //    return coordinate.Trim();
-        //}
-
-        //public static void DiscardLine()
-        //{
-        //    Console.WriteLine("LINHA DESCARTADA");
-        //}
     }
 }
