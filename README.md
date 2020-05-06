@@ -3,7 +3,7 @@ AULA 6 – EXERCÍCIO DE ETL
 Instruções:
 
 1 - Baixe os arquivos do repositório abaixo e salve em "C:\TEMP"
-https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_daily_reports
+"https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_daily_reports", e atualize a pasta "\TratamentoCSV\csse_covid_19_daily_reports"
 
 2 - Execute no no SQL Server o "Script_Completo" da pasta: "\TratamentoCSV\Scripts";
 
