@@ -2,7 +2,7 @@ Aula 6 – Exercício de ETL
 
 OBSERVAÇÕES:
 
-Ajuste os itens a seguir antes de executar a aplicação:
+Ajuste os itens a seguir em Program.cs antes de executar a aplicação:
 
 - path = @"C:\TEMP\csse_covid_19_daily_reports";
 
